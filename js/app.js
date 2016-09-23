@@ -88,7 +88,7 @@ var getAnswered = function(tags) {
 	};
 
 	$.ajax({
-		url: "http://api.stackexchange.com/2.2/tags/" + request.tag + "/top-answerers/" + request.time + "?site=stackoverflow",
+		url: "https://api.stackexchange.com/2.2/tags/" + request.tag + "/top-answerers/" + request.time + "?site=stackoverflow",
 		data: request,
 		dataType: "jsonp",
 		type: "GET",
