@@ -45,3 +45,31 @@
 	background-color: #F78181;
 	padding: 1em;
 }
+
+.answerer * {
+	display:inline-block;
+	vertical-align: top;
+	margin: 0;
+	padding:0;
+}
+
+.user-image {
+	border: 1px solid black;
+}
+
+
+.user-info li {
+	text-align: center;
+	display: inline-block;
+	list-style: none;
+	float:left;
+	margin-right: 10px;
+}
+
+.user-info .list-break { 
+	margin-top: 20px;
+	clear: left; 
+}
+
+
+

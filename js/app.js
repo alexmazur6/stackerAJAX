@@ -4,7 +4,7 @@ var showQuestion = function(question) {
 	
 	// clone our result template code
 	var result = $('.templates .question').clone();
-	
+	console.log(result);
 	// Set the question properties in result
 	var questionElem = result.find('.question-text a');
 	questionElem.attr('href', question.link);
@@ -81,6 +81,73 @@ var getUnanswered = function(tags) {
 	});
 };
 
+var getAnswered = function(tags) {
+	var request = {
+		tag: tags,
+		time: "all_time"
+	};
+
+	$.ajax({
+		url: "http://api.stackexchange.com/2.2/tags/" + request.tag + "/top-answerers/" + request.time + "?site=stackoverflow",
+		data: request,
+		dataType: "jsonp",
+		type: "GET",
+	})
+	.done(function(result) {
+		
+		var searchResults = showSearchResults(request.tag, result.items.length);
+
+		$('.search-results').html(searchResults);
+		
+		$.each(result.items, function(i, item) {
+
+			//Calls and appends each template to the DOM
+			var answerer = showAnswerer(item);
+			$('.results').append(answerer);
+
+		});
+		//Resets the rank counter so that each time a new tag is searched for the top rank is 1
+		rank_counter = 0;
+	})
+}
+	//Global variable for listing the users on the page with a "rank"
+	var rank_counter = 0;
+
+//This function edits a cloned template for showing the top users 
+var showAnswerer = function(profile) {
+
+	rank_counter++;
+	var result = $('.templates .answerer').clone();
+	
+	//Sets the users profile image
+	var user_image = result.find('.user-image');
+	user_image.attr('src', profile.user.profile_image);
+
+	//Sets the users "rank"
+	var user_rank = result.find('.rank');
+	user_rank.text(rank_counter);
+
+	//Sets the users username and adds a link to his profile
+	var user_name = result.find('.user-name');
+	user_name.attr('href', profile.user.link);
+	user_name.text(profile.user.display_name);
+
+	//Sets the users reputation
+	var user_rep = result.find('.rep');
+	user_rep.text('(Reputation: ' + profile.user.reputation + ')');
+
+	//Sets the users score
+	var user_score = result.find('.score');
+	user_score.text('Score: ' + profile.score);
+
+	//Sets the users post count
+	var user_count = result.find('.post-count');
+	user_count.text('Post Count: ' + profile.post_count);
+
+	//Returns the fully cloned and edited template
+	return result;	
+};
+
 
 $(document).ready( function() {
 	$('.unanswered-getter').submit( function(e){
@@ -90,5 +157,14 @@ $(document).ready( function() {
 		// get the value of the tags the user submitted
 		var tags = $(this).find("input[name='tags']").val();
 		getUnanswered(tags);
+	});
+
+	$('.inspiration-getter').submit( function(e) {
+		e.preventDefault();
+
+		$('.results').html('');
+		var tags = $(this).find("input[name='answerers']").val();
+		getAnswered(tags);
+
 	});
 });
